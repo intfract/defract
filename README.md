@@ -1,2 +1,2 @@
-# dfract
+# defract
 Data manipulation and calculation module!
