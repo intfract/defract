@@ -14,6 +14,10 @@ function type(data) {
 
 // Array
 
+export function choice(a: any[]) {
+  return a[this.random(0, a.length)]
+}
+
 export function chunk(a: any[], n: number) : any[] {
   if (n) {
     n = Math.abs(n)
@@ -126,6 +130,18 @@ export function findIndexes(a: object[], rule: any) : number[] {
     }
   }
   return idx
+}
+
+export function ifelse(a: any[], yes, no, fn: (item) => boolean) {
+  const list = []
+  for (let i = 0; i < a.length; i++) {
+    if (fn(a[i])) {
+      list.push(yes)
+    } else {
+      list.push(no)
+    }
+  }
+  return list
 }
 
 export function includes(a: any[], item: any) : boolean {
@@ -264,6 +280,10 @@ export function property(key) {
   return (o: object) => {
     return o[key]
   }
+}
+
+export function random(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min)) + min
 }
 
 export function range(start: number, end: number, step: number) : number[] {
@@ -435,4 +455,16 @@ export function mapValues(o: object, rule: (value: any) => any) : object {
     thing[key] = rule(o[key])
   }
   return thing
+}
+
+// Strings
+
+export function compare(rule: string) {
+  return (s: string) => {
+    if (s.length !== rule.length) return false
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] !== rule[i] && rule[i] !== '?') return false
+    }
+    return true
+  }
 }

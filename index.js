@@ -34,10 +34,13 @@ console.log(_.countif(users, '.age > 13'))
 console.log(_.countif(users, ['&&', '.age > 13', '.deleted === false']))
 // 1
 
+console.log(_.ifelse(users, 'Yes', 'No', (item) => { return item.age > 13 }))
+// ['Yes', 'No', 'Yes']
+
 console.log(_.filter(users, _.must({ age: '> 16' })))
 // [{ name: 'John', age: 18, deleted: false }, { name: 'Bob', age: 69, deleted: true }]
 console.log(_.filter(users, { age: 13 })) // _.matches shorthand
-// [{ name: 'Jane', age: 18, deleted: false }]
+// [{ name: 'Jane', age: 13, deleted: false }]
 console.log(_.filter(users, ['name', 'John'])) // _.matchesProperty shorthand
 // [{ name: 'John', age: 18, deleted: false }]
 console.log(_.filter(users, 'deleted')) // _.property shorthand
@@ -46,7 +49,7 @@ console.log(_.filter(users, 'deleted')) // _.property shorthand
 console.log(_.find(users, _.must({ age: '> 16' })))
 // { name: 'John', age: 18, deleted: false }
 console.log(_.find(users, { age: 13 })) // _.matches shorthand
-// { name: 'Jane', age: 18, deleted: false }
+// { name: 'Jane', age: 13, deleted: false }
 console.log(_.find(users, ['name', 'John'])) // _.matchesProperty shorthand
 // { name: 'John', age: 18, deleted: false }
 console.log(_.find(users, 'deleted')) // _.property shorthand
@@ -63,12 +66,12 @@ console.log(_.findIndexes(users, 'deleted')) // _.property shorthand
 
 console.log(_.distill(users, _.must({ age: ['&&', '>= 13', '<= 18'] })))
 // [[John, Jane], [Bob]]
-console.log(_.distill(users, { age: 18 })) // _.matches shorthand
-// Array of length 2
+console.log(_.distill(users, { age: 13 })) // _.matches shorthand
+// [[Jane], [John, Bob]]
 console.log(_.distill(users, ['name', 'John'])) // _.matchesProperty shorthand
-// Array of length 2
+// [[John], [Jane, Bob]]
 console.log(_.distill(users, 'deleted')) // _.property shorthand
-// Array of length 2
+// [[Bob], [John, Jane]]
 
 console.log(_.unite([0, 'text', [], {}], [0, 'text'], [0, 'text', [], {}]))
 // [0, 'text', [], {}, 0, 'text', 0, 'text', [], {}]
@@ -93,9 +96,14 @@ console.log(_.mapValues({ apple: 'alpha', ball: 'beta' }, v => v[0]))
 console.log(_.unique([0, 'text', [], {}, 'text', {}]))
 // [0, 'text', [], {}]
 
-for (let num of _.range(10, 0, 2)) {
+for (let num of _.range(10, 0)) {
   console.log(num)
 }
+// 10 9 8 7 6 5 4 3 2 1
+for (let num of _.range(0, 10, 2)) {
+  console.log(num)
+}
+// 0 2 4 6 8 
 
 console.log(_.search([[], {}, 'a', 'b', 'c'], {})) // binary search
 // 1
@@ -161,3 +169,12 @@ console.log(space.data[_.ndindex([1, 0, 1], space.length)])
 
 console.log(_.ndpoint(5, space.length, space.dimensions))
 // [1, 0, 1]
+
+console.log(_.filter(['alpha', 'beta', 'gamma'], _.compare('????a'))) // ? = wildcard character 
+// ['alpha', 'gamma']
+
+console.log(_.random(0, 10))
+// random single digit numbers 
+
+console.log(_.choice(['alpha', 'beta', 'gamma']))
+// random choice 
