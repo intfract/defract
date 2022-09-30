@@ -34,7 +34,7 @@ console.log(_.countif(users, '.age > 13'))
 console.log(_.countif(users, ['&&', '.age > 13', '.deleted === false']))
 // 1
 
-console.log(_.ifelse(users, 'Yes', 'No', (item) => { return item.age > 13 }))
+console.log(_.ifelse(users, 'Yes', 'No', (item) => item.age > 13 ))
 // ['Yes', 'No', 'Yes']
 
 console.log(_.filter(users, _.must({ age: '> 16' })))
@@ -111,8 +111,8 @@ console.log(_.search([[], {}, 'a', 'b', 'c'], {})) // binary search
 console.log(_.shuffle([0, 1, 2, 3], 2))
 // [2, 3, 0, 1]
 
-console.log(_.zip(['id', 0, 1, 2], ['username', 'qaxt', 'bob', 'npm']))
-// [['id', 'username'], [0, 'qaxt'], [1, 'bob'], [2, 'npm']]
+console.log(_.zip(['id', 0, 1, 2], ['username', 'int', 'bob', 'npm']))
+// [['id', 'username'], [0, 'int'], [1, 'bob'], [2, 'npm']]
 
 console.log(_.indexes([0, 'text', [], {}, 'text', ['text']], 'text'))
 // [1, 4]
@@ -144,10 +144,10 @@ console.log(_.insert([0, 'text', [], {}], 2, { a: 0 }))
 console.log(_.fromPairs([['a', 0], ['b', []]]))
 // { a: 0, b: [] }
 
-console.log(_.iterate([['id', 0, 1, 2], ['username', 'qaxt', 'bob', 'npm']], (a) => {
+console.log(_.iterate([['id', 0, 1, 2], ['username', 'int', 'bob', 'npm']], (a) => {
   return a
 }))
-// same output as _.zip(['id', 0, 1, 2], ['username', 'qaxt', 'bob', 'npm'])
+// same output as _.zip(['id', 0, 1, 2], ['username', 'int', 'bob', 'npm'])
 
 const space = _.ndarray(2, 3)
 console.log(space)
@@ -156,10 +156,16 @@ console.log(space)
   length: 2,
   dimensions: 3,
   data: [
-    0, 1, 2, 3,
-    4, 5, 6, 7
+    [ 0, 0, 0 ],
+    [ 1, 0, 0 ],
+    [ 0, 1, 0 ],
+    [ 1, 1, 0 ],
+    [ 0, 0, 1 ],
+    [ 1, 0, 1 ],
+    [ 0, 1, 1 ],
+    [ 1, 1, 1 ]
   ]
-} 
+}
 */
 
 console.log(_.ndindex([1, 0, 1], space.length))
@@ -178,3 +184,24 @@ console.log(_.random(0, 10))
 
 console.log(_.choice(['alpha', 'beta', 'gamma']))
 // random choice 
+
+class X {
+  constructor() {
+    
+  }
+}
+
+console.log(_.isPlainObject({ a: 0, b: [] })) // true
+console.log(_.isPlainObject({})) // true
+console.log(_.isPlainObject(new X())) // false
+
+console.log(_.isEmptyObject({ a: 0, b: [] })) // false
+console.log(_.isEmptyObject({})) // true
+console.log(_.isEmptyObject(new X())) // false
+
+console.log(_.isNumber(0)) // true
+console.log(_.isNumber('0')) // false
+console.log(_.isNumber(NaN)) // false
+
+console.log(_.isPositive(1)) // true
+console.log(_.isNegative(-1)) // true

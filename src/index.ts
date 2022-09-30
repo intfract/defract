@@ -1,15 +1,16 @@
-function type(data) {
-  if (typeof data === 'function') {
-    return 0
-  } else if (Array.isArray(data)) {
-    return 1
-  } else if (typeof data === 'object') {
-    return 2
-  } else if (typeof data === 'string') {
-    return 3
-  } else if (typeof data === 'number') {
-    return 4
-  }
+function type(data: any) : string {
+  // if (typeof data === 'function') {
+  //   return 0
+  // } else if (Array.isArray(data)) {
+  //   return 1
+  // } else if (typeof data === 'object') {
+  //   return 2
+  // } else if (typeof data === 'string') {
+  //   return 3
+  // } else if (typeof data === 'number') {
+  //   return 4
+  // }
+  return Object.prototype.toString.call(data).slice(8, -1)
 }
 
 // Array
@@ -33,7 +34,7 @@ export function chunk(a: any[], n: number) : any[] {
 
 export function countif(a: any[], rule: string | string[]) : number {
   let count = 0
-  if (type(rule) === 1) {
+  if (type(rule) === 'Array') {
     for (const item of a) {
       let s = ''
       for (let i = 1; i < rule.length; i++) {
@@ -54,11 +55,11 @@ export function countif(a: any[], rule: string | string[]) : number {
 }
 
 export function distill(a: object[], rule: any) : object[] {
-  if (type(rule) === 1) {
+  if (type(rule) === 'Array') {
     return [a.filter(x => this.matchesProperty(rule[0], rule[1])(x)), a.filter(x => !this.matchesProperty(rule[0], rule[1])(x))]
-  } else if (type(rule) === 2) {
+  } else if (type(rule) === 'Object') {
     return [a.filter(x => this.matches(rule)(x)), a.filter(x => !this.matches(rule)(x))]
-  } else if (type(rule) === 3) {
+  } else if (type(rule) === 'String') {
     return [a.filter(x => this.property(rule)(x)), a.filter(x => !this.property(rule)(x))]
   } else {
     return [a.filter(x => rule(x, a)), a.filter(x => !rule(x, a))]
@@ -79,11 +80,11 @@ export function exclude(...arrays: any[][]) : any[] {
 }
 
 export function filter(a: object[], rule: any) : object[] {
-  if (type(rule) === 1) {
+  if (type(rule) === 'Array') {
     return a.filter(x => this.matchesProperty(rule[0], rule[1])(x))
-  } else if (type(rule) === 2) {
+  } else if (type(rule) === 'Object') {
     return a.filter(x => this.matches(rule)(x))
-  } else if (type(rule) === 3) {
+  } else if (type(rule) === 'String') {
     return a.filter(x => this.property(rule)(x))
   } else {
     return a.filter(x => rule(x, a))
@@ -91,15 +92,15 @@ export function filter(a: object[], rule: any) : object[] {
 }
 
 export function find(a: object[], rule: any) : object {
-  if (type(rule) === 1) {
+  if (type(rule) === 'Array') {
     for (let i = 0; i < a.length; i++) {
       if (this.matchesProperty(rule[0], rule[1])(a[i])) return a[i]
     }
-  } else if (type(rule) === 2) {
+  } else if (type(rule) === 'Object') {
     for (let i = 0; i < a.length; i++) {
       if (this.matches(rule)(a[i])) return a[i]
     }
-  } else if (type(rule) === 3) {
+  } else if (type(rule) === 'String') {
     for (let i = 0; i < a.length; i++) {
       if (this.property(rule)(a[i])) return a[i]
     }
@@ -112,15 +113,15 @@ export function find(a: object[], rule: any) : object {
 
 export function findIndexes(a: object[], rule: any) : number[] {
   let idx = []
-  if (type(rule) === 1) {
+  if (type(rule) === 'Array') {
     for (let i = 0; i < a.length; i++) {
       if (this.matchesProperty(rule[0], rule[1])(a[i])) idx.push(i)
     }
-  } else if (type(rule) === 2) {
+  } else if (type(rule) === 'Object') {
     for (let i = 0; i < a.length; i++) {
       if (this.matches(rule)(a[i])) idx.push(i)
     }
-  } else if (type(rule) === 3) {
+  } else if (type(rule) === 'String') {
     for (let i = 0; i < a.length; i++) {
       if (this.property(rule)(a[i])) idx.push(i)
     }
@@ -215,9 +216,9 @@ export function matchesProperty(key: string | number, value: any) {
 export function must(rule: object) {
   return (o: object) => {
     for (const [key, value] of Object.entries(rule)) {
-      if (type(value) === 3) {
+      if (type(value) === 'String') {
         if (!(new Function(`return ${JSON.stringify(o[key])}${value}`)())) return false
-      } else if (type(value) === 1) {
+      } else if (type(value) === 'Array') {
         let s = ''
         for (let i = 1; i < value.length; i++) {
           if (i - 1) {
@@ -385,11 +386,11 @@ export function eq(...items: any[]) : boolean {
   for (let i = 0; i < items.length - 1; i++) {
     if (items[i] !== items[i + 1]) {
       if (type(items[i]) === type(items[i + 1])) {
-        if (type(items[i]) === 1) {
+        if (type(items[i]) === 'Array') {
           for (let j = 0; j < Math.max(items[i].length, items[i + 1].length); j++) {
             if (!this.eq(items[i][j], items[i + 1][j])) return false
           }
-        } else if (type(items[i]) === 2) {
+        } else if (type(items[i]) === 'Object') {
           if (Object.keys(items[i]).length === Object.keys(items[i + 1]).length) {
             for (const [key, value] of Object.entries(items[i])) {
               if (items[i + 1][key] !== value && !this.eq(items[i + 1][key], value)) return false
@@ -397,7 +398,7 @@ export function eq(...items: any[]) : boolean {
           } else {
             return false
           }
-        } else if (type(items[i]) === 3) {
+        } else if (type(items[i]) === 'String') {
           if (items[i].toLowerCase() !== items[i + 1].toLowerCase()) return false
         } else {
           return false
@@ -423,6 +424,18 @@ export function factors(n: number) : number[] {
   return a
 }
 
+export function isNegative(n: number) : boolean {
+  return n < 0
+}
+
+export function isNumber(n: any) : boolean {
+  return type(n) === 'Number' && !isNaN(n)
+}
+
+export function isPositive(n: number) : boolean {
+  return n > 0
+}
+
 export function perfectsq(n: number) : boolean {
   return this.nth(this.factors(n), -1) === this.nth(this.factors(n), -2)
 }
@@ -439,6 +452,14 @@ export function fromPairs(a: any[][]) : object {
     o[item[0]] = item[1]
   }
   return o
+}
+
+export function isEmptyObject(o: any) : boolean {
+  return (this.isPlainObject(o) && Object.keys(o).length === 0)
+}
+
+export function isPlainObject(o: any) : boolean {
+  return (type(o) === 'Object' && Object.getPrototypeOf(o) === Object.prototype)
 }
 
 export function mapKeys(o: object, rule: (key: any, value: any) => any) : object {
